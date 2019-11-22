@@ -49,46 +49,17 @@ module Test_FSM() ;
 	reg powerMode;
 	reg [7:0] startPower;
 	wire [7:0] powerOut;
+	wire powerWarn;
 
 	//---------------------------------------------
 	// All the modules needed
 	//---------------------------------------------
-	LightSaberColor Test(clk, Ri, Gi, Bi, Ro, Go, Bo);
-	LightSaberBladeConfig LSBCT(clk, configSet, configOut);
-	Power powerTest(clk, rst, powerUse, powerMode, powerOut);
-	LightsaberLength lengthTest(clk, Ini, Deci, Ino, Deco);
 	LightsaberOnOff onTest(clk, oni, ono);
+	LightSaberColor Test(clk, ono, Ri, Gi, Bi, Ro, Go, Bo);
+	LightSaberBladeConfig LSBCT(clk, ono, configSet, configOut);
+	LightsaberLength lengthTest(clk, ono, Ini, Deci, Ino, Deco);
+	Power powerTest(clk, ono, rst, powerUse, powerMode, powerOut, powerWarn);
 
-	reg [7:0] a;
-	reg [7:0] b;
-	reg m;
-	wire co;
-	wire [7:0] sum;
-
-	//Add_Sub_8_bit powerUser(a, b, m, co, sum);
-	// assign co = (1'b1 & a[7]) &&
-	// 			!(1'b0 & a[6]) &&
-	// 			(1'b1 & a[5]) &&
-	// 			(1'b1 & a[4]) &&
-	// 			!(1'b0 & a[3]) &&
-	// 			!(1'b0 & a[2]) &&
-	// 			(1'b1 & a[1]) &&
-	// 			!(1'b0 & a[0]);
-	// initial begin
-	// 	m = 1;
-	// 	a = 178;
-	// 	b = 3;
-	// 	#15
-	// 	$display("  %b", a);
-	// 	$display("----------");
-	// 	$display("  %b", co);
-	// 	a = 188;
-	// 	#15
-	// 	$display("  %b", a);
-	// 	$display("  %b", co);
-		
-
-	// end
 	//---------------------------------------------
 	// Clock 
 	//---------------------------------------------
@@ -109,12 +80,12 @@ module Test_FSM() ;
 	initial
 		begin
 		#1 ///Offset the Square Wave
-		$display("CLK| Rin      | Gin      | Bin      | Rout     | Gout     | Bout     | BC | POUT     | Length");
-		$display("---+----------+----------+----------+----------+----------+----------+----+----------+-----");
+		$display("CLK|| Rin | Gin | Bin || Rout | Gout | Bout | BC | POUT | Length    | PWARN |");
+		$display("---++-----+-----+-----++------+------+------+----+------+-----------+-------+");
 		forever
 			begin
 			#10
-				$display(" %b | %b | %b | %b | %b | %b | %b | %b | %d | %b %b | %d.%d", controlledClk, Ri, Gi, Bi, Ro, Go, Bo, configOut, powerOut, powerTest.selDec, powerTest.limMin, Ino, Deco);
+				$display(" %b || %3d | %3d | %3d || %3d  | %3d  | %3d  | %3d | %d | %d.%d ft   | %b     |", controlledClk, Ri, Gi, Bi, Ro, Go, Bo, configOut, powerOut, Ino, Deco, powerWarn);
 			end
 	end	
 	
@@ -126,19 +97,28 @@ module Test_FSM() ;
 			#2 //Offset the Square Wave
 			#10
 				rst = 1;
-				oni = 1;
+				oni = 0;
 			#20
+				$display("Lightsaber on, recharging...");
 				rst = 0;
-                Ri = 255;
-                Gi = 255;
-                Bi = 255;
-                Ini = 1;
+				oni = 1;
+                Ri = 128;	// Set color to gray
+                Gi = 128;
+                Bi = 128;
+                Ini = 1;	// Set blade length to 1.5 ft
                 Deci = 50;
-				configSet = 2;
-				powerUse = 1;
-				powerMode = 0;
+				configSet = 2;	// Set blade config to double
+				powerUse = 1;	// Set power usage to trainning
+				powerMode = 0;	// Set power mode to recharging
             #1900
             	oni = 0;
+				$display("Lightsaber off");
+			#50
+				oni = 1;
+				$display("Lightsaber on");
+			#50
+				$display("Now in trainning mode");
+				oni = 1;
                 Ri = 128;
                 Gi = 0;
                 Bi = 128;
