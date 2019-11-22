@@ -8,8 +8,8 @@ module LightsaberLength(clk, Ini, Deci Ino, Deco);
     input [1:0] Ini;
     input [5:0] Deci
 
-    output [7:0] Ro;
-    output [7:0] Go;
+    output [1:0] Ino;
+    output [5:0] Deco;
     
     DFF integer[1:0] (clk, Ini, Ino);
     DFF decimal[5:0] (clk, Deci, Deco);
