@@ -52,11 +52,11 @@ module Test_FSM();
 	//---------------------------------------------
 	// All the modules needed
 	//---------------------------------------------
-	LightsaberOnOff onTest(clk, oni, ono);
-	LightSaberColor Test(clk, ono, Ri, Gi, Bi, Ro, Go, Bo);
-	LightSaberBladeConfig LSBCT(clk, ono, configSet, configOut);
-	LightsaberLength lengthTest(clk, ono, Ini, Deci, Ino, Deco);
-	Power powerTest(clk, ono, rst, powerUse, powerMode, powerOut, powerWarn);
+	LightsaberOnOff on(clk, oni, ono);
+	LightSaberColor color(clk, ono, Ri, Gi, Bi, Ro, Go, Bo);
+	LightSaberBladeConfig bladeConfig(clk, ono, configSet, configOut);
+	LightsaberLength length(clk, ono, Ini, Deci, Ino, Deco);
+	Power power(clk, ono, rst, powerUse, powerMode, powerOut, powerWarn);
 
 	//---------------------------------------------
 	// Clock 
