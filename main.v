@@ -9,6 +9,7 @@
 `include "colorRegs.v"		// Lightsaber color 
 `include "configReg.v"		// Lightsaber blade configuration
 `include "power.v"			// Lightsaber power 
+`include "lengthRegs.v"
 
 module Test_FSM() ;
     parameter k = 5;
@@ -27,6 +28,12 @@ module Test_FSM() ;
     wire [7:0] Go;
     wire [7:0] Bo;
 
+    // Length Inputs
+    reg [1:0] Ini;
+    reg [5:0] Deci;
+    wire [1:0] Ino;
+    wire [5:0] Deco;
+
 	// Blade configuration
 	reg [1:0] configSet;
     wire [1:0] configOut;
@@ -43,6 +50,7 @@ module Test_FSM() ;
 	LightSaberColor Test(clk, Ri, Gi, Bi, Ro, Go, Bo);
 	LightSaberBladeConfig LSBCT(clk, configSet, configOut);
 	Power powerTest(clk, rst, powerUse, powerMode, powerOut);
+	LightsaberLength lengthTest(clk, Ini, Deci, Ino, Deco);
 
 	reg [7:0] a;
 	reg [7:0] b;
@@ -94,12 +102,12 @@ module Test_FSM() ;
 	initial
 		begin
 		#1 ///Offset the Square Wave
-		$display("CLK| Rin      | Gin      | Bin      | Rout     | Gout     | Bout     | BC | POUT     ");
-		$display("---+----------+----------+----------+----------+----------+----------+----+----------");
+		$display("CLK| Rin      | Gin      | Bin      | Rout     | Gout     | Bout     | BC | POUT     | Length");
+		$display("---+----------+----------+----------+----------+----------+----------+----+----------+-----");
 		forever
 			begin
 			#10
-				$display(" %b | %b | %b | %b | %b | %b | %b | %b | %d | %b %b", clk, Ri, Gi, Bi, Ro, Go, Bo, configOut, powerOut, powerTest.selDec, powerTest.limMin);
+				$display(" %b | %b | %b | %b | %b | %b | %b | %b | %d | %b %b | %d.%d", clk, Ri, Gi, Bi, Ro, Go, Bo, configOut, powerOut, powerTest.selDec, powerTest.limMin, Ino, Deco);
 			end
 	end	
 	
@@ -116,6 +124,8 @@ module Test_FSM() ;
                 Ri = 255;
                 Gi = 255;
                 Bi = 255;
+                Ini = 1;
+                Deci = 50;
 				configSet = 2;
 				powerUse = 1;
 				powerMode = 0;
@@ -123,6 +133,8 @@ module Test_FSM() ;
                 Ri = 128;
                 Gi = 0;
                 Bi = 128;
+                Ini = 2;
+                Deci = 33;
 				configSet = 3;
 				powerUse = 1;
 				powerMode = 1;
