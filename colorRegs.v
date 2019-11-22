@@ -38,12 +38,12 @@ module LightSaberColor(clk, en, Ri, Gi, Bi, Ro, Go, Bo);
     wire [1:0] gdout;
     wire [7:0] gmout;
     Dec1x2 greenDec (en, gdout);
-    Mux2_8bit greenMux (Ri, 8'b00000000, gdout, gmout);
+    Mux2_8bit greenMux (Gi, 8'b00000000, gdout, gmout);
     
     wire [1:0] bdout;
     wire [7:0] bmout;
     Dec1x2 blueDec (en, bdout);
-    Mux2_8bit blueMux (Ri, 8'b00000000, bdout, bmout);
+    Mux2_8bit blueMux (Bi, 8'b00000000, bdout, bmout);
     
     // Color registers
     DFF red[7:0] (clk, rmout, Ro);

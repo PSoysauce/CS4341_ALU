@@ -41,11 +41,13 @@ module Power(clk, en, rst, powerSetting, powerMode, powerOutput, powerWarn);
     Dec1x2 enDec (en, enDout);
     Mux2 clkMux (clk, 1'b0, enDout, enClk);
     
-    // Output initialization on reset;
-    wire [1:0] rstDout;
-    wire [7:0] rstMout;
-    Dec1x2 rstDec (rst, rstDout);
-    Mux2_8bit rstMux (8'b00000000, powerOutput, rstDout, rstMout);
+    // Output initialization on reset or minimum bound to set power output to zero 
+    wire [1:0] setZeroDout;
+    wire [7:0] setZeroMout;
+    wire setZero;
+    assign setZero = rst || limMin;
+    Dec1x2 setZeroDec (setZero, setZeroDout);
+    Mux2_8bit setZeroMux (8'b00000000, powerOutput, setZeroDout, setZeroMout);
 
     // Setting the adder/substractor values (what to add by/substract by) based on
     //   powerSetting
@@ -66,7 +68,7 @@ module Power(clk, en, rst, powerSetting, powerMode, powerOutput, powerWarn);
     wire [1:0] powerDout;
     wire [7:0] powerMout;
     Dec1x2 powerDec (selDec, powerDout);
-    Mux2_8bit powerMux (rstMout, powerUsageCalcOut, powerDout, powerMout);
+    Mux2_8bit powerMux (setZeroMout, powerUsageCalcOut, powerDout, powerMout);
     DFF power[7:0] (enClk, powerMout, powerOutput);
 
     // Limits and power warn check
