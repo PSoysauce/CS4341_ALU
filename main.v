@@ -1,23 +1,21 @@
 /*
 	Glassless
 	Main control file
-	
 */
 
 // Import module files as they are completed
 `include "util.v"			// Contains all of the basic components we need
+`include "onOffReg.v"		// Lightsaber on/off register
+`include "power.v"			// Lightsaber power 
 `include "colorRegs.v"		// Lightsaber color 
 `include "configReg.v"		// Lightsaber blade configuration
-`include "power.v"			// Lightsaber power 
-`include "lengthRegs.v"
-`include "onOffReg.v"
+`include "lengthRegs.v"		// Lightsaber length
 
-module Test_FSM() ;
-    parameter k = 5;
-
-	//---------------------------------------------
+/*
+	Testbench
+*/
+module Test_FSM();
 	// Inputs
-	//---------------------------------------------
 	reg clk;
 	reg rst;
 
@@ -80,12 +78,12 @@ module Test_FSM() ;
 	initial
 		begin
 		#1 ///Offset the Square Wave
-		$display("CLK|| Rin | Gin | Bin || Rout | Gout | Bout | BC | POUT | Length    | PWARN |");
-		$display("---++-----+-----+-----++------+------+------+----+------+-----------+-------+");
+		$display("CLK|| Rin | Gin | Bin ||| Rout | Gout | Bout | BC | Length    | POUT | PWARN |");
+		$display("---++-----+-----+-----+++------+------+------+----+-----------+------+-------+");
 		forever
 			begin
 			#10
-				$display(" %b || %3d | %3d | %3d || %3d  | %3d  | %3d  | %3d | %d | %d.%d ft   | %b     |", controlledClk, Ri, Gi, Bi, Ro, Go, Bo, configOut, powerOut, Ino, Deco, powerWarn);
+				$display(" %b || %3d | %3d | %3d ||| %3d  | %3d  | %3d  | %2d | %d.%d m    | %3d  | %b     |", controlledClk, Ri, Gi, Bi, Ro, Go, Bo, configOut, Ino, Deco, powerOut, powerWarn);
 			end
 	end	
 	
@@ -102,10 +100,10 @@ module Test_FSM() ;
 				$display("Lightsaber on, recharging...");
 				rst = 0;
 				oni = 1;
-                Ri = 128;	// Set color to gray
+                Ri = 128;		// Set color to gray
                 Gi = 128;
                 Bi = 128;
-                Ini = 1;	// Set blade length to 1.5 ft
+                Ini = 1;		// Set blade length to 1.5 ft
                 Deci = 50;
 				configSet = 2;	// Set blade config to double
 				powerUse = 1;	// Set power usage to trainning
@@ -117,19 +115,24 @@ module Test_FSM() ;
 				oni = 1;
 				$display("Lightsaber on");
 			#50
-				$display("Now in trainning mode");
-				oni = 1;
+				$display("Changed lightsaber settings");
                 Ri = 128;
                 Gi = 0;
                 Bi = 128;
                 Ini = 2;
                 Deci = 33;
 				configSet = 3;
+			#50
+				$display("Now in trainning mode");
 				powerUse = 1;
 				powerMode = 1;
-            #1000
-				powerUse = 1;
-			#1000
+            #500
+				$display("Now in bulkhead cutting mode");
+				powerUse = 3;
+			#200
+				$display("Now in dueling mode");
+				powerUse = 2;
+			#800
 			$finish;
 		end
 

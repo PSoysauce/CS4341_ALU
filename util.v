@@ -78,6 +78,42 @@ module Mux2_8bit(a1, a0, s, b);
                ({k{s[0]}} & a0);
 endmodule
 
+//=============================================
+// 2-Channel, 1-Bit Multiplexer
+//=============================================
+module Mux2(a1, a0, s, b);
+	parameter k = 1;        // One bit wide
+	input [k-1:0] a1, a0;   // Inputs
+	input [1:0]   s;        // One-hot select
+	output[k-1:0] b;
+	assign b = ({k{s[1]}} & a1) |
+               ({k{s[0]}} & a0);
+endmodule
+
+//=============================================
+// 2-Channel, 1-Bit Multiplexer
+//=============================================
+module Mux2_2bit(a1, a0, s, b);
+	parameter k = 2;        // One bit wide
+	input [k-1:0] a1, a0;   // Inputs
+	input [1:0]   s;        // One-hot select
+	output[k-1:0] b;
+	assign b = ({k{s[1]}} & a1) |
+               ({k{s[0]}} & a0);
+endmodule
+
+//=============================================
+// 2-Channel, 1-Bit Multiplexer
+//=============================================
+module Mux2_6bit(a1, a0, s, b);
+	parameter k = 6;        // One bit wide
+	input [k-1:0] a1, a0;   // Inputs
+	input [1:0]   s;        // One-hot select
+	output[k-1:0] b;
+	assign b = ({k{s[1]}} & a1) |
+               ({k{s[0]}} & a0);
+endmodule
+
 // The following three modules are taken from Dr. Becker's sample code 
 //   given in HW2 assignment document
 module Add_half (input a, b, output c_out, sum);
