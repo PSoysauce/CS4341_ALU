@@ -10,6 +10,7 @@
 `include "configReg.v"		// Lightsaber blade configuration
 `include "power.v"			// Lightsaber power 
 `include "lengthRegs.v"
+`include "onOffReg.v"
 
 module Test_FSM() ;
     parameter k = 5;
@@ -34,6 +35,11 @@ module Test_FSM() ;
     wire [1:0] Ino;
     wire [5:0] Deco;
 
+    // OnOff Inputs
+    reg oni;
+    wire ono;
+    wire controlledClk = ono & clk;
+
 	// Blade configuration
 	reg [1:0] configSet;
     wire [1:0] configOut;
@@ -51,6 +57,7 @@ module Test_FSM() ;
 	LightSaberBladeConfig LSBCT(clk, configSet, configOut);
 	Power powerTest(clk, rst, powerUse, powerMode, powerOut);
 	LightsaberLength lengthTest(clk, Ini, Deci, Ino, Deco);
+	LightsaberOnOff onTest(clk, oni, ono);
 
 	reg [7:0] a;
 	reg [7:0] b;
@@ -107,7 +114,7 @@ module Test_FSM() ;
 		forever
 			begin
 			#10
-				$display(" %b | %b | %b | %b | %b | %b | %b | %b | %d | %b %b | %d.%d", clk, Ri, Gi, Bi, Ro, Go, Bo, configOut, powerOut, powerTest.selDec, powerTest.limMin, Ino, Deco);
+				$display(" %b | %b | %b | %b | %b | %b | %b | %b | %d | %b %b | %d.%d", controlledClk, Ri, Gi, Bi, Ro, Go, Bo, configOut, powerOut, powerTest.selDec, powerTest.limMin, Ino, Deco);
 			end
 	end	
 	
@@ -119,6 +126,7 @@ module Test_FSM() ;
 			#2 //Offset the Square Wave
 			#10
 				rst = 1;
+				oni = 1;
 			#20
 				rst = 0;
                 Ri = 255;
@@ -130,6 +138,7 @@ module Test_FSM() ;
 				powerUse = 1;
 				powerMode = 0;
             #1900
+            	oni = 0;
                 Ri = 128;
                 Gi = 0;
                 Bi = 128;
