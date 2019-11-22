@@ -78,13 +78,13 @@ module Test_FSM();
 	initial
 		begin
 		#1 ///Offset the Square Wave
-		$display("CLK|| Rin | Gin | Bin | Bin | Length In ||| Rout | Gout | Bout | BC | Length    | POUT | PWARN |");
-		$display("---++-----+-----+-----+-----+-----------+++------+------+------+----+-----------+------+-------+");
+		$display("CLK| ON | Rin | Gin | Bin | Bin | Length In ||| Rout | Gout | Bout | BC | Length    | POUT | PWARN |");
+		$display("---+----+-----+-----+-----+-----+-----------+++------+------+------+----+-----------+------+-------+");
 		forever
 			begin
 			#10
-				$display(" %b || %3d | %3d | %3d | %2d  | %d.%d m    ||| %3d  | %3d  | %3d  | %2d | %d.%d m    | %3d  | %b     |", 
-							controlledClk, Ri, Gi, Bi, configSet, Ini, Deci, Ro, Go, Bo, configOut, Ino, Deco, powerOut, powerWarn);
+				$display(" %b | %2b | %3d | %3d | %3d | %2d  | %d.%d m    ||| %3d  | %3d  | %3d  | %2d | %d.%d m    | %3d  | %b     |", 
+							controlledClk, ono, Ri, Gi, Bi, configSet, Ini, Deci, Ro, Go, Bo, configOut, Ino, Deco, powerOut, powerWarn);
 			end
 	end	
 	
